@@ -1,0 +1,141 @@
+// ER Diagram ระบบประเมินบุคลากร
+// วิธีใช้: เปิด https://dbdiagram.io/d แล้ววางข้อความทั้งไฟล์นี้ทางซ้าย
+
+Project evaluation_db {
+  database_type: 'MySQL'
+  Note: 'ระบบประเมินบุคลากร (โจทย์แข่งขันทักษะ รายการที่ 57)'
+}
+
+Table departments {
+  id int [pk, increment]
+  name varchar(100) [not null, unique]
+  Note: 'แผนก/สาขางาน'
+}
+
+Table academic_ranks {
+  id int [pk, increment]
+  name varchar(100) [not null, unique]
+  sort_order int [not null, default: 1]
+  Note: 'วิทยฐานะ (ครูผู้ช่วย ถึง เชี่ยวชาญพิเศษ) แต่ละวิทยฐานะใช้แบบประเมินต่างกัน'
+}
+
+Table users {
+  id int [pk, increment]
+  email varchar(100) [not null, unique]
+  password_hash varchar(255) [not null]
+  full_name varchar(150) [not null]
+  role enum('admin','evaluatee','evaluator') [not null, note: 'admin=ฝ่ายบุคลากร evaluatee=ผู้รับการประเมิน evaluator=กรรมการ']
+  department_id int [ref: > departments.id]
+  academic_rank_id int [ref: > academic_ranks.id, note: 'ใช้เลือกแบบประเมิน']
+  position varchar(100)
+  phone varchar(20)
+  created_at datetime [not null, default: `CURRENT_TIMESTAMP`]
+  Note: 'ผู้ใช้ทุกคน แยกด้วย role'
+}
+
+Table evaluation_periods {
+  id int [pk, increment]
+  name varchar(150) [not null]
+  start_date date [not null]
+  end_date date [not null]
+  created_at datetime [not null, default: `CURRENT_TIMESTAMP`]
+  Note: 'รอบการประเมิน เปิด-ปิด'
+}
+
+Table evaluation_forms {
+  id int [pk, increment]
+  period_id int [not null, ref: > evaluation_periods.id]
+  academic_rank_id int [not null, ref: > academic_ranks.id]
+  name varchar(200) [not null]
+  indexes { (period_id, academic_rank_id) [unique] }
+  Note: 'แบบประเมิน 1 รอบ มีวิทยฐานะละ 1 ชุด'
+}
+
+Table topics {
+  id int [pk, increment]
+  form_id int [not null, ref: > evaluation_forms.id]
+  component tinyint [not null, note: 'องค์ประกอบที่ 1/2/3']
+  title varchar(200) [not null]
+  description text
+  sort_order int [not null, default: 1]
+  Note: 'หัวข้อการประเมิน'
+}
+
+Table indicators {
+  id int [pk, increment]
+  topic_id int [not null, ref: > topics.id]
+  name varchar(200) [not null]
+  description text
+  weight decimal(6,3) [not null, note: 'น้ำหนักคะแนน รวมทั้งแบบประเมิน = 100']
+  score_type enum('scale','yes_no') [not null, default: 'scale']
+  max_level tinyint [not null, default: 4, note: 'ระดับสูงสุด 4 หรือ 5 (yes_no = 1)']
+  evidence_note varchar(255) [note: 'หลักฐานที่ต้องแนบ']
+  sort_order int [not null, default: 1]
+  Note: 'ตัวชี้วัด'
+}
+
+Table evaluations {
+  id int [pk, increment]
+  period_id int [not null, ref: > evaluation_periods.id]
+  form_id int [not null, ref: > evaluation_forms.id]
+  evaluatee_id int [not null, ref: > users.id]
+  status enum('draft','submitted','completed','reopen_requested') [not null, default: 'draft']
+  submitted_at datetime
+  reopen_reason text
+  acknowledged_at datetime [note: 'วันที่ผู้รับการประเมินรับทราบผล']
+  indexes { (period_id, evaluatee_id) [unique] }
+  Note: 'แบบประเมินของผู้รับการประเมิน 1 คนใน 1 รอบ'
+}
+
+Table self_assessments {
+  id int [pk, increment]
+  evaluation_id int [not null, ref: > evaluations.id]
+  indicator_id int [not null, ref: > indicators.id]
+  detail text
+  self_score tinyint [note: 'ระดับ 1 ถึง max_level หรือ 1=มี 0=ไม่มี']
+  updated_at datetime [not null]
+  indexes { (evaluation_id, indicator_id) [unique] }
+  Note: 'ข้อมูลและคะแนนประเมินตนเอง'
+}
+
+Table evidences {
+  id int [pk, increment]
+  evaluation_id int [not null, ref: > evaluations.id]
+  indicator_id int [not null, ref: > indicators.id]
+  evidence_type enum('file','url') [not null]
+  file_path varchar(255)
+  original_name varchar(255)
+  url varchar(500)
+  uploaded_at datetime [not null]
+  Note: 'หลักฐาน PDF รูป หรือ URL'
+}
+
+Table committee_assignments {
+  id int [pk, increment]
+  evaluation_id int [not null, ref: > evaluations.id]
+  evaluator_id int [not null, ref: > users.id]
+  committee_role enum('chair','member') [not null, default: 'member', note: 'ประธาน/กรรมการร่วม']
+  overall_comment text
+  signature_path varchar(255)
+  signed_at datetime [note: 'NULL = ยังไม่ลงนาม/ยกเลิกแล้ว']
+  indexes { (evaluation_id, evaluator_id) [unique] }
+  Note: 'มอบหมายกรรมการ + ลงนาม'
+}
+
+Table scores {
+  id int [pk, increment]
+  assignment_id int [not null, ref: > committee_assignments.id]
+  indicator_id int [not null, ref: > indicators.id]
+  score tinyint [not null]
+  comment text
+  scored_at datetime [not null]
+  indexes { (assignment_id, indicator_id) [unique] }
+  Note: 'คะแนนและความเห็นกรรมการ'
+}
+
+Table grade_levels {
+  id int [pk, increment]
+  name varchar(50) [not null]
+  min_percent decimal(5,2) [not null]
+  Note: 'เกณฑ์ระดับผล ดีเด่น 90 ดีมาก 80 ดี 70 พอใช้ 50 ต้องปรับปรุง 0'
+}

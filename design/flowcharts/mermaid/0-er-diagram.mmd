@@ -1,0 +1,95 @@
+erDiagram
+  departments ||--o{ users : "มีบุคลากร"
+  academic_ranks ||--o{ users : "วิทยฐานะ"
+  academic_ranks ||--o{ evaluation_forms : "ใช้แบบ"
+  evaluation_periods ||--o{ evaluation_forms : "มีแบบประเมิน"
+  evaluation_forms ||--o{ topics : "มีหัวข้อ"
+  evaluation_forms ||--o{ evaluations : ""
+  topics ||--o{ indicators : "มีตัวชี้วัด"
+  evaluation_periods ||--o{ evaluations : "ในรอบ"
+  users ||--o{ evaluations : "ผู้รับการประเมิน"
+  evaluations ||--o{ self_assessments : "ประเมินตนเอง"
+  indicators ||--o{ self_assessments : ""
+  evaluations ||--o{ evidences : "แนบหลักฐาน"
+  indicators ||--o{ evidences : ""
+  evaluations ||--o{ committee_assignments : "มอบหมายกรรมการ"
+  users ||--o{ committee_assignments : "กรรมการ"
+  committee_assignments ||--o{ scores : "ให้คะแนน"
+  indicators ||--o{ scores : ""
+  departments { int id PK
+    varchar name }
+  academic_ranks { int id PK
+    varchar name
+    int sort_order }
+  evaluation_forms { int id PK
+    int period_id FK
+    int academic_rank_id FK
+    varchar name }
+  grade_levels { int id PK
+    varchar name
+    decimal min_percent }
+  users { int id PK
+    varchar email UK
+    varchar password_hash
+    varchar full_name
+    enum role "admin/evaluatee/evaluator"
+    int department_id FK
+    int academic_rank_id FK
+    varchar position
+    varchar phone
+    datetime created_at }
+  evaluation_periods { int id PK
+    varchar name
+    date start_date
+    date end_date
+    datetime created_at }
+  topics { int id PK
+    int form_id FK
+    tinyint component
+    varchar title
+    text description
+    int sort_order }
+  indicators { int id PK
+    int topic_id FK
+    varchar name
+    text description
+    decimal weight
+    enum score_type "scale/yes_no"
+    tinyint max_level
+    varchar evidence_note
+    int sort_order }
+  evaluations { int id PK
+    int period_id FK
+    int form_id FK
+    int evaluatee_id FK
+    enum status "draft/submitted/completed/reopen_requested"
+    datetime submitted_at
+    text reopen_reason
+    datetime acknowledged_at }
+  self_assessments { int id PK
+    int evaluation_id FK
+    int indicator_id FK
+    text detail
+    tinyint self_score
+    datetime updated_at }
+  evidences { int id PK
+    int evaluation_id FK
+    int indicator_id FK
+    enum evidence_type "file/url"
+    varchar file_path
+    varchar original_name
+    varchar url
+    datetime uploaded_at }
+  committee_assignments { int id PK
+    int evaluation_id FK
+    int evaluator_id FK
+    enum committee_role "chair/member"
+    text overall_comment
+    varchar signature_path
+    datetime signed_at }
+  scores { int id PK
+    int assignment_id FK
+    int indicator_id FK
+    tinyint score
+    text comment
+    datetime scored_at }

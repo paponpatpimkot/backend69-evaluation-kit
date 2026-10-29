@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ระบบประเมินบุคลากร</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --brand: #1d4e89; }
+    body { font-family: 'Sarabun', sans-serif; background: #f4f6fa; }
+    .sidebar { width: 240px; min-height: 100vh; background: var(--brand); }
+    .sidebar .nav-link { color: #cfe0f5; border-radius: .5rem; }
+    .sidebar .nav-link.active { background: rgba(255,255,255,.15); color: #fff; font-weight: 600; }
+    .brand { color: #fff; font-weight: 700; font-size: 1.1rem; }
+    .card { border: 0; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+    .stat { font-size: 1.8rem; font-weight: 700; }
+    .progress { height: .5rem; }
+    .table td, .table th { vertical-align: middle; }
+    @media (max-width: 991px) { .sidebar { display: none !important; } }
+  </style>
+</head>
+<body>
+<div class="d-flex">
+  <nav class="sidebar d-flex flex-column p-3 gap-1">
+    <div class="brand mb-4"><i class="bi bi-clipboard2-check"></i> ระบบประเมินบุคลากร</div>
+    <a class="nav-link" href="#"><i class="bi bi-speedometer2 me-2"></i>ภาพรวม</a><a class="nav-link" href="#"><i class="bi bi-calendar-range me-2"></i>รอบการประเมิน</a><a class="nav-link active" href="#"><i class="bi bi-list-check me-2"></i>หัวข้อและตัวชี้วัด</a><a class="nav-link" href="#"><i class="bi bi-people me-2"></i>ผู้รับการประเมิน</a><a class="nav-link" href="#"><i class="bi bi-person-badge me-2"></i>กรรมการผู้ประเมิน</a><a class="nav-link" href="#"><i class="bi bi-bar-chart me-2"></i>รายงาน</a>
+    <div class="mt-auto small text-white-50"><i class="bi bi-person-circle"></i> ฝ่ายบริหารบุคลากร<br><a href="login.html" class="text-white-50">ออกจากระบบ</a></div>
+  </nav>
+  <main class="flex-grow-1 p-4">
+    <div class="mb-3 d-flex flex-wrap justify-content-between align-items-end gap-2">
+      <div><h4 class="fw-bold mb-0">หัวข้อและตัวชี้วัด</h4><div class="text-secondary small">รอบที่ 1 ปีงบประมาณ 2570 (1 ต.ค. 2569 – 31 มี.ค. 2570) <span class="badge text-bg-success">เปิดอยู่</span></div></div>
+      <div style="min-width:280px"><label class="form-label small mb-1">แบบประเมินของวิทยฐานะ</label>
+        <select class="form-select"><option>ครูผู้ช่วย</option><option>ครู (ยังไม่มีวิทยฐานะ)</option><option>ครูชำนาญการ</option><option selected>ครูชำนาญการพิเศษ</option><option>ครูเชี่ยวชาญ</option><option>ครูเชี่ยวชาญพิเศษ</option></select></div>
+    </div>
+    <div class="row g-3">
+      <div class="col-lg-4"><div class="card p-3">
+        <div class="d-flex justify-content-between align-items-center mb-2"><h6 class="fw-bold mb-0">หัวข้อการประเมิน</h6><button class="btn btn-sm btn-primary"><i class="bi bi-plus"></i> เพิ่มหัวข้อ</button></div>
+        <div class="list-group">
+          <a class="list-group-item list-group-item-action active"><span class="small">องค์ประกอบ 1 ตอน 1 ด้านที่ 1 การจัดการเรียนรู้</span><br><span class="small text-white-50">8 ตัวชี้วัด</span> <span class="badge text-bg-light float-end">32</span></a>
+          <a class="list-group-item list-group-item-action"><span class="small">องค์ประกอบ 1 ตอน 1 ด้านที่ 2 การส่งเสริมการจัดการเรียนรู้</span><br><span class="small text-secondary">4 ตัวชี้วัด</span> <span class="badge text-bg-light border float-end">16</span></a>
+          <a class="list-group-item list-group-item-action"><span class="small">องค์ประกอบ 1 ตอน 1 ด้านที่ 3 การพัฒนาตนเองและวิชาชีพ</span><br><span class="small text-secondary">3 ตัวชี้วัด</span> <span class="badge text-bg-light border float-end">12</span></a>
+          <a class="list-group-item list-group-item-action"><span class="small">องค์ประกอบ 1 ตอน 2 ประเด็นท้าทาย (PA)</span><br><span class="small text-secondary">3 ตัวชี้วัด</span> <span class="badge text-bg-light border float-end">20</span></a>
+          <a class="list-group-item list-group-item-action"><span class="small">องค์ประกอบ 2 การมีส่วนร่วมในการพัฒนาการศึกษา</span><br><span class="small text-secondary">1 ตัวชี้วัด</span> <span class="badge text-bg-light border float-end">10</span></a>
+          <a class="list-group-item list-group-item-action"><span class="small">องค์ประกอบ 3 วินัย คุณธรรม จริยธรรม และจรรยาบรรณ</span><br><span class="small text-secondary">10 ตัวชี้วัด</span> <span class="badge text-bg-light border float-end">10</span></a>
+        </div>
+        <div class="small text-success mt-2"><i class="bi bi-check-circle"></i> น้ำหนักรวมทั้งแบบประเมิน 100 ครบแล้ว</div>
+      </div></div>
+      <div class="col-lg-8">
+        <div class="card p-3 mb-3">
+          <h6 class="fw-bold">ตัวชี้วัดในหัวข้อ: ด้านที่ 1 ด้านการจัดการเรียนรู้</h6>
+          <div class="small text-secondary mb-2">คะแนนของตัวชี้วัด = ระดับที่ได้ ÷ ระดับสูงสุด × น้ำหนัก</div>
+          <div class="table-responsive"><table class="table mb-0"><thead class="table-light"><tr><th>ตัวชี้วัด</th><th>น้ำหนัก</th><th>แบบประเมิน</th><th>หลักฐานที่ต้องแนบ</th><th></th></tr></thead><tbody><tr><td>1.1 สร้างและหรือพัฒนาหลักสูตร</td><td>4</td><td><span class="badge text-bg-light border">ระดับ 1–4</span></td><td class="small text-secondary">รายวิชา/หน่วยการเรียนรู้ (PDF)</td><td class="text-nowrap"><button class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></button> <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></td></tr><tr><td>1.2 ออกแบบการจัดการเรียนรู้</td><td>4</td><td><span class="badge text-bg-light border">ระดับ 1–4</span></td><td class="small text-secondary">แผนการจัดการเรียนรู้ (PDF)</td><td class="text-nowrap"><button class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></button> <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></td></tr><tr><td>1.3 จัดกิจกรรมการเรียนรู้</td><td>4</td><td><span class="badge text-bg-light border">ระดับ 1–4</span></td><td class="small text-secondary">ภาพกิจกรรม หรือ URL คลิปการสอน</td><td class="text-nowrap"><button class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></button> <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></td></tr><tr><td>1.4 สร้างและหรือพัฒนาสื่อ นวัตกรรม เทคโนโลยี และแหล่งเรียนรู้</td><td>4</td><td><span class="badge text-bg-light border">ระดับ 1–4</span></td><td class="small text-secondary">สื่อ/นวัตกรรม (ไฟล์ หรือ URL)</td><td class="text-nowrap"><button class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></button> <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></td></tr><tr><td>1.5 วัดและประเมินผลการเรียนรู้</td><td>4</td><td><span class="badge text-bg-light border">ระดับ 1–4</span></td><td class="small text-secondary">เครื่องมือวัดผล (PDF)</td><td class="text-nowrap"><button class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></button> <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></td></tr><tr><td>1.6 ศึกษา วิเคราะห์ และสังเคราะห์ฯ</td><td>4</td><td><span class="badge text-bg-light border">ระดับ 1–4</span></td><td class="small text-secondary">รายงานวิจัยในชั้นเรียน (PDF)</td><td class="text-nowrap"><button class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></button> <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></td></tr><tr><td>1.7 จัดบรรยากาศที่ส่งเสริมและพัฒนาผู้เรียน</td><td>4</td><td><span class="badge text-bg-light border">ระดับ 1–4</span></td><td class="small text-secondary">ภาพห้องเรียน (รูป)</td><td class="text-nowrap"><button class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></button> <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></td></tr><tr><td>1.8 อบรมและพัฒนาคุณลักษณะที่ดีของผู้เรียน</td><td>4</td><td><span class="badge text-bg-light border">ระดับ 1–4</span></td><td class="small text-secondary">บันทึกการอบรมบ่มนิสัย (PDF)</td><td class="text-nowrap"><button class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></button> <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></td></tr></tbody></table></div>
+        </div>
+        <div class="card p-3">
+          <h6 class="fw-bold">เพิ่มตัวชี้วัด</h6>
+          <form class="row g-2">
+            <div class="col-md-8"><label class="form-label small">ชื่อตัวชี้วัด</label><input class="form-control" required></div>
+            <div class="col-md-4"><label class="form-label small">น้ำหนักคะแนน</label><input type="number" class="form-control" min="0.001" max="100" step="0.001" required></div>
+            <div class="col-12"><label class="form-label small">รายละเอียด</label><textarea class="form-control" rows="2"></textarea></div>
+            <div class="col-md-6"><label class="form-label small">รูปแบบการประเมิน</label>
+              <select class="form-select"><option>ระดับ 1–4</option><option>ระดับ 1–5</option><option>มี / ไม่มี</option></select>
+              <div class="form-text">1 ต่ำกว่าที่คาดหวังมาก · 2 ต่ำกว่าที่คาดหวัง · 3 ตามที่คาดหวัง · 4 สูงกว่าที่คาดหวัง</div></div>
+            <div class="col-md-6"><label class="form-label small">หลักฐานที่ต้องแนบ</label><input class="form-control" placeholder="เช่น ไฟล์ PDF หรือ URL"></div>
+            <div class="col-12 text-end"><button class="btn btn-primary"><i class="bi bi-save"></i> บันทึก</button></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
