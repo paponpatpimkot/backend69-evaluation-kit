@@ -27,7 +27,7 @@ git pull
 |---|---|
 | `design/evaluation_db.sql` | ฐานข้อมูลพร้อมข้อมูลตัวอย่าง (ใช้ตั้งแต่สัปดาห์ 5) เปิดใน HeidiSQL แล้วกด Run ทั้งไฟล์ |
 | `design/evaluation_db.dbml` | ER Diagram วางใน https://dbdiagram.io/d เพื่อดูภาพ |
-| `design/flowcharts/` | ผังงาน 5 ผัง และ ER (รูป PNG) |
+| `design/flowcharts/` | ผังงาน 5 ผัง และ ER (รูป PNG ความละเอียดสูง และ SVG ใน `svg/` ซูมได้ไม่แตก) |
 | `design/screens/` | หน้าจอที่ครูออกแบบไว้ (เปิด .html ในเบราว์เซอร์ได้) |
 | `week04/` | ไฟล์เริ่มต้นของสัปดาห์ 4: `data/` และ `public/` และรูปผลลัพธ์ที่ควรได้ใน `expected/` |
 
