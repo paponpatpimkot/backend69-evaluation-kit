@@ -25,7 +25,7 @@ git pull
 
 | โฟลเดอร์ | ใช้ทำอะไร |
 |---|---|
-| `design/evaluation_db.sql` | ฐานข้อมูลพร้อมข้อมูลตัวอย่าง (ใช้ตั้งแต่สัปดาห์ 5) นำเข้าด้วย phpMyAdmin ของ XAMPP (แท็บ Import) มี VIEW `evaluatee_list` สำหรับหน้า "ผู้รับการประเมิน" |
+| `design/evaluation_db.sql` | ฐานข้อมูลพร้อมข้อมูลตัวอย่าง (ใช้ตั้งแต่สัปดาห์ 5) เปิดใน HeidiSQL แล้วกด Run ทั้งไฟล์ |
 | `design/evaluation_db.dbml` | ER Diagram วางใน https://dbdiagram.io/d เพื่อดูภาพ |
 | `design/flowcharts/` | ผังงาน 5 ผัง และ ER (รูป PNG) |
 | `design/screens/` | หน้าจอที่ครูออกแบบไว้ (เปิด .html ในเบราว์เซอร์ได้) |
