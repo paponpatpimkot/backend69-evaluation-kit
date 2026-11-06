@@ -1,6 +1,6 @@
 -- ฐานข้อมูลระบบประเมินบุคลากร (ครูออกแบบให้ ตามโจทย์ข้อ 3.2.2)
 -- ใช้แบบประเมินผลการปฏิบัติงานตำแหน่งครูจริง (ว 9/2564) แยกตามวิทยฐานะ
--- วิธีใช้: เปิดไฟล์นี้ใน HeidiSQL หรือ DBeaver แล้วกด Run ทั้งไฟล์
+-- วิธีใช้: phpMyAdmin (XAMPP) แท็บ Import เลือกไฟล์นี้แล้วกด Import หรือเปิดใน HeidiSQL แล้วกด Run ทั้งไฟล์
 -- รหัสผ่านของผู้ใช้ตัวอย่างทุกคนคือ 1234 (เก็บแบบเข้ารหัส bcrypt ใช้ตอนสัปดาห์ 8)
 --
 -- วิธีคิดคะแนน: คะแนนของตัวชี้วัด = ระดับที่ได้ ÷ ระดับสูงสุด × น้ำหนัก
@@ -931,3 +931,27 @@ INSERT INTO scores (assignment_id, indicator_id, score, comment) VALUES
 (12, 52, 3, NULL),
 (12, 53, 4, NULL),
 (12, 54, 3, NULL);
+
+
+-- 14) มุมมองสำเร็จรูป (VIEW) สำหรับหน้า "ผู้รับการประเมิน" ใช้ตั้งแต่สัปดาห์ 5
+--     รวมข้อมูลจาก users + departments + evaluations ไว้ให้แล้ว อ่านได้เหมือนตาราง 1 ตาราง
+--     (วิธีเขียน JOIN เองเรียนสัปดาห์ 7)
+--     progress = กรอกตัวชี้วัดไปแล้วกี่เปอร์เซ็นต์ ของแบบประเมินที่ตัวเองใช้
+CREATE VIEW evaluatee_list AS
+SELECT
+  u.id,
+  u.full_name,
+  d.name AS department,
+  u.position,
+  u.email,
+  u.phone,
+  e.status,
+  CAST(ROUND(100 * (SELECT COUNT(*) FROM self_assessments sa
+                    WHERE sa.evaluation_id = e.id AND sa.self_score IS NOT NULL)
+               / (SELECT COUNT(*) FROM indicators i JOIN topics t ON t.id = i.topic_id
+                    WHERE t.form_id = e.form_id)) AS UNSIGNED) AS progress
+FROM users u
+JOIN departments d ON d.id = u.department_id
+JOIN evaluations e ON e.evaluatee_id = u.id
+WHERE u.role = 'evaluatee'
+ORDER BY u.id;
