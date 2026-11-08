@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ระบบประเมินบุคลากร | แผนกวิชา</title>
+  <!-- หน้านี้ครูทำให้ ไม่ต้องแก้ หน้าที่ของเราคือเขียน API ให้หน้านี้เรียกได้ -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --brand: #1d4e89; --brand-soft: #e8f0fa; }
+    body { font-family: 'Sarabun', sans-serif; background: #f4f6fa; }
+    .sidebar { width: 240px; min-height: 100vh; background: var(--brand); }
+    .sidebar .nav-link { color: #cfe0f5; border-radius: .5rem; }
+    .sidebar .nav-link.active { background: rgba(255,255,255,.15); color: #fff; font-weight: 600; }
+    .sidebar .nav-link.disabled { color: #8fb0d6; }
+    .brand { color: #fff; font-weight: 700; font-size: 1.1rem; }
+    .card { border: 0; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+    .url-bar { background: #1f2933; color: #e5e7eb; font-family: Consolas, monospace; font-size: .9rem; border-radius: .5rem; }
+    .url-bar .url { color: #7dd3fc; word-break: break-all; }
+    .table td, .table th { vertical-align: middle; }
+    @media (max-width: 991px) { .sidebar { display: none !important; } }
+  </style>
+</head>
+<body>
+<div class="d-flex">
+  <nav class="sidebar d-flex flex-column p-3 gap-1">
+    <div class="brand mb-4"><i class="bi bi-clipboard2-check"></i> ระบบประเมินบุคลากร</div>
+    <a class="nav-link disabled" href="#"><i class="bi bi-speedometer2 me-2"></i>ภาพรวม</a>
+    <a class="nav-link" href="/"><i class="bi bi-people me-2"></i>บุคลากร</a>
+    <a class="nav-link active" href="/departments.html"><i class="bi bi-building me-2"></i>แผนกวิชา</a>
+    <a class="nav-link disabled" href="#"><i class="bi bi-calendar-range me-2"></i>รอบการประเมิน</a>
+    <a class="nav-link disabled" href="#"><i class="bi bi-list-check me-2"></i>หัวข้อและตัวชี้วัด</a>
+    <a class="nav-link disabled" href="#"><i class="bi bi-person-badge me-2"></i>กรรมการผู้ประเมิน</a>
+    <a class="nav-link disabled" href="#"><i class="bi bi-bar-chart me-2"></i>รายงาน</a>
+    <div class="mt-auto small text-white-50">เมนูสีจาง = ยังไม่ได้สร้าง</div>
+  </nav>
+
+  <main class="flex-grow-1 p-3 p-md-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <h4 class="mb-0 fw-bold">แผนกวิชา</h4>
+        <div class="text-secondary small">ใบงานที่ 6 · เพิ่ม แก้ ลบ แผนก</div>
+      </div>
+      <span class="badge text-bg-light border"><i class="bi bi-person-circle"></i> ฝ่ายบริหารบุคลากร</span>
+    </div>
+
+    <!-- ฟอร์มเพิ่ม/แก้แผนก: ช่อง name ถูกส่งไปใน body เป็น JSON -->
+    <div class="card mb-3">
+      <div class="card-body">
+        <form id="deptForm" class="row g-2 align-items-end">
+          <input type="hidden" id="editId">
+          <div class="col-md-6">
+            <label class="form-label small" id="formLabel">ชื่อแผนกใหม่</label>
+            <input name="name" id="nameInput" class="form-control" placeholder="เช่น ช่างกลโรงงาน">
+          </div>
+          <div class="col-auto">
+            <button class="btn btn-primary" id="saveBtn"><i class="bi bi-plus-lg"></i> เพิ่มแผนก</button>
+            <button type="button" class="btn btn-outline-secondary d-none" id="cancelBtn">ยกเลิก</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="url-bar p-2 px-3 mb-3">
+      <div>คำขอล่าสุด: <span class="url" id="urlText">-</span></div>
+      <div id="resultInfo">-</div>
+    </div>
+    <div id="alertBox"></div>
+
+    <div class="card">
+      <div class="table-responsive">
+        <table class="table mb-0">
+          <thead><tr><th style="width:80px">id</th><th>ชื่อแผนก</th><th style="width:170px"></th></tr></thead>
+          <tbody id="rows"><tr><td colspan="3" class="text-center text-secondary py-4">กำลังโหลด...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+
+  function showAlert(msg, type) {
+    $('alertBox').innerHTML = msg ? `<div class="alert alert-${type || 'danger'} py-2">${msg}</div>` : '';
+  }
+
+  // ส่งคำขอไปที่ API แล้วอ่านคำตอบ { status, message, data }
+  async function callApi(method, url, body) {
+    $('urlText').textContent = method + ' ' + url + (body ? '  body: ' + JSON.stringify(body) : '');
+    const options = { method: method };
+    if (body) {
+      options.headers = { 'Content-Type': 'application/json' };
+      options.body = JSON.stringify(body);
+    }
+    let res;
+    try {
+      res = await fetch(url, options);
+    } catch (e) {
+      $('resultInfo').textContent = 'ติดต่อเซิร์ฟเวอร์ไม่ได้';
+      showAlert('ติดต่อเซิร์ฟเวอร์ไม่ได้ ลองดูว่ารัน <code>npm run dev</code> อยู่หรือเปล่า');
+      return null;
+    }
+    let json = null;
+    try { json = await res.json(); } catch (e) { }
+    $('resultInfo').textContent = 'รหัส ' + res.status + (json && json.message ? ' · ' + json.message : '');
+    if (!json) {
+      showAlert('เซิร์ฟเวอร์ตอบ ' + res.status + ' แต่ไม่ใช่ JSON' + (res.status === 404 ? ' (ยังไม่มี route นี้)' : ' ดูข้อความสีแดงใน Terminal'));
+    } else {
+      showAlert(json.message, res.ok ? 'success' : 'danger');
+    }
+    return { code: res.status, ok: res.ok, json: json };
+  }
+
+  async function loadList() {
+    const res = await fetch('/api/departments');
+    const json = await res.json();
+    const list = json.data || [];
+    $('rows').innerHTML = list.map(d => `
+      <tr>
+        <td>${d.id}</td>
+        <td>${d.name}</td>
+        <td class="text-end">
+          <button class="btn btn-sm btn-outline-primary" onclick="startEdit(${d.id}, '${d.name}')"><i class="bi bi-pencil"></i> แก้</button>
+          <button class="btn btn-sm btn-outline-danger" onclick="removeDept(${d.id}, '${d.name}')"><i class="bi bi-trash"></i> ลบ</button>
+        </td>
+      </tr>`).join('');
+  }
+
+  function startEdit(id, name) {
+    $('editId').value = id;
+    $('nameInput').value = name;
+    $('formLabel').textContent = 'แก้ชื่อแผนก id ' + id;
+    $('saveBtn').innerHTML = '<i class="bi bi-check-lg"></i> บันทึก';
+    $('cancelBtn').classList.remove('d-none');
+  }
+
+  function resetForm() {
+    $('editId').value = '';
+    $('nameInput').value = '';
+    $('formLabel').textContent = 'ชื่อแผนกใหม่';
+    $('saveBtn').innerHTML = '<i class="bi bi-plus-lg"></i> เพิ่มแผนก';
+    $('cancelBtn').classList.add('d-none');
+  }
+
+  // กดปุ่ม: ถ้ายังไม่เลือกแถว = POST (เพิ่ม) ถ้าเลือกแถวแล้ว = PUT (แก้)
+  $('deptForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const body = { name: $('nameInput').value.trim() };
+    const id = $('editId').value;
+    const r = id
+      ? await callApi('PUT', '/api/departments/' + id, body)
+      : await callApi('POST', '/api/departments', body);
+    if (r && r.ok) { resetForm(); loadList(); }
+  });
+  $('cancelBtn').addEventListener('click', resetForm);
+
+  async function removeDept(id, name) {
+    if (!confirm('ลบแผนก ' + name + ' ?')) return;
+    const r = await callApi('DELETE', '/api/departments/' + id);
+    if (r && r.ok) loadList();
+  }
+
+  loadList();
+</script>
+</body>
+</html>
