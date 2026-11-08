@@ -50,7 +50,7 @@ first-server/
 
 ## สัปดาห์ 5 (ใบสั่งงาน #1): ใช้กับโปรเจกต์ evaluation-api
 
-- `week05/database/users-16.sql` ข้อมูลบุคลากรที่ฝ่ายบุคลากรส่งมา คัดลอกทั้งไฟล์ไปวางต่อท้าย `database/01-core.sql` ของตัวเอง (หลัง INSERT แผนกและวิทยฐานะ)
+- `week05/database/users-16.sql` ข้อมูลบุคลากรที่ฝ่ายบุคลากรส่งมา คัดลอกทั้งไฟล์ไปวางต่อท้าย `database/evaluation_db.sql` ของตัวเอง (หลัง INSERT แผนกและวิทยฐานะ)
 - `week05/public/index.html` หน้า "บุคลากร" คัดลอกไปทับ `public/index.html` เดิมในโฟลเดอร์ evaluation-api ของตัวเอง (โฟลเดอร์ kit และ evaluation-api อยู่ไดรฟ์ไหนก็ได้)
 
 หน้านี้เรียก `GET /api/departments`, `GET /api/users?q=&department_id=&role=` และ `GET /api/users/:id`
