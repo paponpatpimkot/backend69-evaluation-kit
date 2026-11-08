@@ -1,19 +1,12 @@
--- ข้อมูลตั้งต้นจากฝ่ายบุคลากร: วิทยฐานะ 6 รายการ และบุคลากร 16 คน (ครูให้ ไม่ต้องพิมพ์เอง)
+-- ข้อมูลบุคลากร 16 คน ที่ฝ่ายบุคลากรส่งมา (ครูให้ ไม่ต้องพิมพ์เอง)
 -- วิธีใช้: phpMyAdmin > Import > เลือกไฟล์นี้ > Go
---         ต้องสร้างตารางครบ และกรอกตาราง departments 5 แผนก (id 1-5) ก่อน
+--         ต้องสร้างตารางครบ และกรอกตาราง departments (id 1-5) กับ academic_ranks (id 1-6) ก่อน
 -- department_id: 1 เทคโนโลยีสารสนเทศ, 2 การบัญชี, 3 การตลาด, 4 ช่างไฟฟ้ากำลัง, 5 ช่างยนต์
+-- academic_rank_id: 1 ครูผู้ช่วย ... 6 ครูเชี่ยวชาญพิเศษ
 -- password_hash คือรหัสผ่าน 1234 ที่เข้ารหัสแล้ว (bcrypt) ใช้ตอน login สัปดาห์ 7
 
 USE evaluation_db;
 SET NAMES utf8mb4;
-
-INSERT INTO academic_ranks (name, sort_order) VALUES
-('ครูผู้ช่วย', 1),
-('ครู (ยังไม่มีวิทยฐานะ)', 2),
-('ครูชำนาญการ', 3),
-('ครูชำนาญการพิเศษ', 4),
-('ครูเชี่ยวชาญ', 5),
-('ครูเชี่ยวชาญพิเศษ', 6);
 
 INSERT INTO users (email, password_hash, full_name, role, department_id, academic_rank_id, position, phone) VALUES
 ('somchai@college.ac.th', '$2b$10$CEHLjBAO50NJ.3gfOip1nejJfPrsnqVUPFA5M4lgMIm1F1o1vOMOm', 'นายสมชาย รักสอน', 'evaluatee', 1, 3, 'ครูชำนาญการ', '0820000001'),
