@@ -25,7 +25,6 @@ git pull
 
 | โฟลเดอร์ | ใช้ทำอะไร |
 |---|---|
-| `design/evaluation_db.sql` | ฐานข้อมูลฉบับเต็มของครู (ไว้อ้างอิง) นักศึกษาเขียน CREATE TABLE เองตาม ER ไม่ต้องนำเข้าไฟล์นี้ |
 | `design/evaluation_db.dbml` | ER Diagram วางใน https://dbdiagram.io/d เพื่อดูภาพ |
 | `design/flowcharts/` | ผังงาน 5 ผัง และ ER (รูป PNG) |
 | `design/screens/` | หน้าจอที่ครูออกแบบไว้ (เปิด .html ในเบราว์เซอร์ได้) |
